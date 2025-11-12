@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
+import "./App.css";
 
 const DEFAULT_BOARD_SIZE = 3;
 const MAX_BOARD_SIZE = 5;
