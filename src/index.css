@@ -45,6 +45,13 @@ button {
   border-color: #111111;
 }
 
+.button-container {
+  display: flex; 
+  justify-content: center; 
+  gap: 15px; 
+  margin-top: 1.5rem; 
+}
+
 button:hover {
   filter: brightness(1.05);
 }
