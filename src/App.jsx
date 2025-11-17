@@ -334,6 +334,15 @@ export default function App() {
     }
   }
 
+  function handleInstantWin() {
+    const solved = createSolvedBoard(size);
+    setTiles(solved);
+    const message = "Cheat activated 😈 Puzzle instantly solved!";
+    setStatusMessage(message);
+    setLiveMessage(message);
+    setBoardFocusMode(false);
+  }
+
   if (showMainPage) {
   return (
     <div className="app main-page">
@@ -380,6 +389,10 @@ export default function App() {
 
           <button type="button" onClick={() => resetGame(size)}>
             New game
+          </button>
+
+          <button type="button" onClick={handleInstantWin}>
+            Instant win
           </button>
 
           <button
@@ -437,6 +450,11 @@ export default function App() {
 
             const movable = isTileMovable(index, tiles, size);
 
+            const col = (value - 1) % size;
+            const row = Math.floor((value - 1) / size);
+
+            const step = 100 / (size - 1);
+
             return (
               <motion.button
                 key={value}
@@ -460,6 +478,12 @@ export default function App() {
                     ? `Tile ${value}. Press to move into the empty space.`
                     : `Tile ${value}. Not currently movable.`
                 }
+                style={{
+                  backgroundImage: "url('/src/assets/Images/lorax.png')",
+                  backgroundSize: `${size * 100}% ${size * 100}%`,
+                  backgroundPosition: `${col * step}% ${row * step}%`,
+                  backgroundRepeat: "no-repeat",
+                }}
               >
                 <span aria-hidden="true">{value}</span>
               </motion.button>
