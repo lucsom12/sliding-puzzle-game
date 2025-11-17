@@ -10,6 +10,9 @@
   border-radius: 1.25rem;
   background-color: #ffffff;
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column; /* Se till att innehållet staplas vertikalt */
+  align-items: center;
 }
 
 .app-title {
@@ -87,6 +90,5 @@
 .tile span {
   display: inline-block;
 }
-
 
 

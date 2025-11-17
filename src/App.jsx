@@ -93,6 +93,7 @@ export default function App() {
   const [boardFocusMode, setBoardFocusMode] = useState(false);
 
   const [showMainPage, setShowMainPage] = useState(true);
+  const [showTutorialPage, setShowTutorialPage] = useState(false);
 
 
   // Holds DOM refs to each tile button by tile value (1..n)
@@ -346,17 +347,46 @@ export default function App() {
   if (showMainPage) {
   return (
     <div className="app main-page">
-      <h1 className="app-title">Sliding Puzzle</h1>
+      <h1 className="app-title">🧩Sliding Puzzle 🧩</h1>
+      <p> Welcome to the sliding puzzle game, where you can challange your mental capacity! </p>
+      <div className="button-container">
+      <button
+        className="button"
+        onClick={() => setShowMainPage(false)}
+      >
+        Start Game
+      </button>
+      <button
+        className="button"
+        onClick={() => {
+          setShowMainPage(false);
+          setShowTutorialPage(true);
+      }}
+      >
+        Tutorial
+      </button>
+      </div>
+    </div>
+  );
+}
+
+if (showTutorialPage) {
+  return (
+    <div className="app tutorial-page">
+      <h1 className="app-title">🧩 Tutorial 🧩</h1>
+      <p> Try an get all the pieces on the correct spot
+        By enabling focus game board bla...
+         </p>
       <button
         className="start-button"
-        onClick={() => setShowMainPage(false)}
+        onClick={() => setShowTutorialPage(false)}
       >
         Start Game
       </button>
     </div>
   );
 }
- 
+
 
   return (
     <main
