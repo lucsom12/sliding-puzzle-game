@@ -92,6 +92,9 @@ export default function App() {
   const [liveMessage, setLiveMessage] = useState("");
   const [boardFocusMode, setBoardFocusMode] = useState(false);
 
+  const [showMainPage, setShowMainPage] = useState(true);
+
+
   // Holds DOM refs to each tile button by tile value (1..n)
   const tileRefs = useRef({});
 
@@ -330,6 +333,21 @@ export default function App() {
       setLiveMessage("Cannot move in that direction.");
     }
   }
+
+  if (showMainPage) {
+  return (
+    <div className="app main-page">
+      <h1 className="app-title">Sliding Puzzle</h1>
+      <button
+        className="start-button"
+        onClick={() => setShowMainPage(false)}
+      >
+        Start Game
+      </button>
+    </div>
+  );
+}
+ 
 
   return (
     <main
