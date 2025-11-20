@@ -2,9 +2,14 @@ import React, { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import "./App.css";
 
-const DEFAULT_BOARD_SIZE = 3;
+function clamp(val, min, max) {
+  return Math.min(max, Math.max(min, val));
+}
+
+const MIN_BOARD_SIZE = 1
 const MAX_BOARD_SIZE = 5;
-const BOARD_SIZES = Array.from({ length: MAX_BOARD_SIZE - DEFAULT_BOARD_SIZE + 1 }, (_, i) => i + DEFAULT_BOARD_SIZE);
+const DEFAULT_BOARD_SIZE = 3;
+const BOARD_SIZES = Array.from({ length: MAX_BOARD_SIZE - MIN_BOARD_SIZE + 1 }, (_, i) => i + MIN_BOARD_SIZE);
 
 function createSolvedBoard(size) {
   const total = size * size;
@@ -83,8 +88,9 @@ function isSolved(tiles) {
 }
 
 export default function App() {
-  const [size, setSize] = useState(DEFAULT_BOARD_SIZE);
-  const [tiles, setTiles] = useState(() => shuffleBoard(DEFAULT_BOARD_SIZE));
+  const STARTING_BOARD_SIZE = clamp(DEFAULT_BOARD_SIZE, MIN_BOARD_SIZE, MAX_BOARD_SIZE);
+  const [size, setSize] = useState(STARTING_BOARD_SIZE);
+  const [tiles, setTiles] = useState(() => shuffleBoard(STARTING_BOARD_SIZE));
   const [moveCount, setMoveCount] = useState(0);
   const [statusMessage, setStatusMessage] = useState(
     "Use arrow keys or click tiles next to the empty space."
