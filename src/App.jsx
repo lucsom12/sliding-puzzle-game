@@ -2,6 +2,8 @@ import React, { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import "./App.css";
 
+
+
 function clamp(val, min, max) {
   return Math.min(max, Math.max(min, val));
 }
@@ -356,13 +358,13 @@ export default function App() {
   return (
     <div className="app main-page">
       <h1 className="app-title">🧩Sliding Puzzle 🧩</h1>
-      <p> Welcome to the sliding puzzle game, where you can challange your mental capacity! </p>
+      <p> Välkommen till Sliding Puzzle spelet, här kan du testa din kluriga egenskaper! </p>
       <div className="button-container">
       <button
         className="button"
         onClick={() => setShowMainPage(false)}
       >
-        Start Game
+        Starta Spelet
       </button>
       <button
         className="button"
@@ -381,15 +383,29 @@ export default function App() {
 if (showTutorialPage) {
   return (
     <div className="app tutorial-page">
-      <h1 className="app-title">🧩 Tutorial 🧩</h1>
-      <p> Try an get all the pieces on the correct spot
-        By enabling focus game board bla...
+      <h1 className="app-title">🧩 Hur man spelar 🧩</h1>
+      <p> Försök att få alla delar a bilden på rätt plats för att se vad den föreställer
          </p>
+
+        <div className="tutorial-images">
+        <img
+            src="/src/assets/Images/Tutorial1.png"
+            alt="Tutorial step 2"
+            className="tutorial-image"
+          />
+          <img
+            src="/src/assets/Images/Tutorial2.png"
+            alt="Tutorial step 2"
+            className="tutorial-image"
+          />
+      </div>
+
+
       <button
         className="start-button"
         onClick={() => setShowTutorialPage(false)}
       >
-        Start Game
+        Starta Spelet
       </button>
     </div>
   );
@@ -399,9 +415,9 @@ function Popup({ onClose }) {
   return (
     <div className="popup-overlay">
       <div className="popup-content">
-        <h2>🎉 Congratulations! You Won! 🎉</h2>
-        <p>You solved the puzzle!</p>
-        <button onClick={onClose}>Play Again</button>
+        <h2>🎉 Grattid du vann! 🎉</h2>
+        <p>Du har löst pusslet!</p>
+        <button onClick={onClose}>Spela igen</button>
       </div>
     </div>
   );
@@ -412,17 +428,17 @@ function Popup({ onClose }) {
       className="app"
       aria-label="Sliding puzzle game"
     >
-      <h1 className="app-title">Sliding Puzzle</h1>
+      <h1 className="app-title">Slid pussel</h1>
 
             <section
         className="controls"
         aria-label="Game settings"
       >
         <label htmlFor="board-size" className="visually-hidden">
-          Board size
+          Spelet storlek
         </label>
         <div className="control-group">
-          <span id="board-size-label">Board size:</span>
+          <span id="board-size-label">Spelets storlek:</span>
           <select
             id="board-size"
             aria-labelledby="board-size-label"
@@ -437,11 +453,11 @@ function Popup({ onClose }) {
           </select>
 
           <button type="button" onClick={() => resetGame(size)}>
-            New game
+            Ny omgång
           </button>
 
           <button type="button" onClick={handleInstantWin}>
-            Instant win
+            Vinn nu
           </button>
 
           <button
@@ -451,11 +467,15 @@ function Popup({ onClose }) {
           >
             {boardFocusMode ? "Unfocus game board" : "Focus game board"}
           </button>
+
+          <button type="button" >
+            Tutorial
+          </button>
         </div>
 
-                <p id="instructions">
-          Use “Focus game board” to
-          cycle between movable tiles with Tab. Press Escape to exit board focus.
+          <p id="instructions">
+          Använd “Fokus på Pussel" för att
+          skifta mellan tillgängliga ruot med Tab. Tryck på Escape för att avsluta Pussel Fokus.
         </p>
       </section>
 

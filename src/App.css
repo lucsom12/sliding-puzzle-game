@@ -13,6 +13,8 @@
   display: flex;
   flex-direction: column; /* Se till att innehållet staplas vertikalt */
   align-items: center;
+  box-sizing: border-box; /* Scale when zoomed */
+
 }
 
 .app-title {
@@ -29,10 +31,12 @@
 
 .control-group {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: wrap; 
   gap: 0.75rem;
+  justify-content: center; /* centers when wrapping */
   align-items: center;
   margin-bottom: 0.5rem;
+  width: 100%;         /* avoids overflow */
 }
 
 .control-group span {
@@ -61,6 +65,10 @@
   padding: 0.5rem;
   border-radius: 1rem;
   background: #1b1f24;
+
+  width: 100%;               
+  max-width: 90vw;          
+  box-sizing: border-box;
 }
 
 /* Puzzle tiles */
@@ -75,7 +83,8 @@
   align-items: center;
   justify-content: center;
   aspect-ratio: 1 / 1;     /* keeps tiles square */
-  min-height: 0;           /* let aspect-ratio control height */
+  min-width: clamp(60px, 18vw, 120px);
+  min-height: clamp(60px, 18vw, 120px);
   box-shadow: 0 3px 0 rgba(0, 0, 0, 0.3);
 }
 
@@ -117,4 +126,20 @@
   padding: 0.5rem 1.5rem;
   font-size: 1rem;
   cursor: pointer;
+}
+
+.tutorial-images {
+  display: flex;
+  flex-direction: column;   /* Stack images vertically */
+  gap: 1rem;                /* Space between images */
+  align-items: center;      /* Center images horizontally */
+  margin: 1rem 0;
+  width: 100%;
+}
+
+.tutorial-image {
+  max-width: 80%;           /* Prevent image from being too wide */
+  height: auto;             /* Maintain aspect ratio */
+  border-radius: 0.5rem;    /* Rounded corners */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2); /* Soft shadow */
 }
