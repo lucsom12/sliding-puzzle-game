@@ -100,6 +100,7 @@ export default function App() {
 
   const [showMainPage, setShowMainPage] = useState(true);
   const [showTutorialPage, setShowTutorialPage] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
 
 
   // Holds DOM refs to each tile button by tile value (1..n)
@@ -157,6 +158,7 @@ export default function App() {
         const solvedMessage = `Puzzle solved in ${newMoveCount} moves! 🎉`;
         setStatusMessage(solvedMessage);
         setLiveMessage(solvedMessage);
+        setShowPopup(true);
       }
 
       return newTiles;
@@ -393,6 +395,17 @@ if (showTutorialPage) {
   );
 }
 
+function Popup({ onClose }) {
+  return (
+    <div className="popup-overlay">
+      <div className="popup-content">
+        <h2>🎉 Congratulations! You Won! 🎉</h2>
+        <p>You solved the puzzle!</p>
+        <button onClick={onClose}>Play Again</button>
+      </div>
+    </div>
+  );
+}
 
   return (
     <main
@@ -469,7 +482,8 @@ if (showTutorialPage) {
         <div
           className="puzzle-grid"
           style={{
-            gridTemplateColumns: `repeat(${size}, minmax(3rem, 5rem))`,
+            //Storlek på pusslet 
+            gridTemplateColumns: `repeat(${size}, minmax(6rem, 8rem))`,
           }}
         >
                     {tiles.map((value, index) => {
@@ -521,12 +535,20 @@ if (showTutorialPage) {
                   backgroundRepeat: "no-repeat",
                 }}
               >
-                <span aria-hidden="true">{value}</span>
+              {/* <span aria-hidden="true">{value}</span> */ }  
               </motion.button>
             );
           })}
         </div>
       </section>
+      {showPopup && (
+      <Popup
+        onClose={() => {
+          setShowPopup(false);
+          resetGame(size);
+        }}
+      />
+    )}
     </main>
   );
 }
