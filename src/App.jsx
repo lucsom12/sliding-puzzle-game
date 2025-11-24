@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import "./App.css";
-
+import moveSoundFile from './assets/Sounds/MoveSound.mp3';
 
 
 function clamp(val, min, max) {
@@ -99,6 +99,7 @@ export default function App() {
   );
   const [liveMessage, setLiveMessage] = useState("");
   const [boardFocusMode, setBoardFocusMode] = useState(false);
+  const moveSoundRef = useRef(new Audio(moveSoundFile));
 
   const [showMainPage, setShowMainPage] = useState(true);
   const [showTutorialPage, setShowTutorialPage] = useState(false);
@@ -144,6 +145,11 @@ export default function App() {
   function swapTiles(index1, index2) {
     setTiles((prev) => {
       const newTiles = [...prev];
+      const audio = moveSoundRef.current;
+      audio.pause();      
+      audio.currentTime = 0; 
+      audio.play();  
+    
       [newTiles[index1], newTiles[index2]] = [newTiles[index2], newTiles[index1]];
 
       const movedTile = newTiles[index1] === 0 ? newTiles[index2] : newTiles[index1];
@@ -415,7 +421,7 @@ function Popup({ onClose }) {
   return (
     <div className="popup-overlay">
       <div className="popup-content">
-        <h2>🎉 Grattid du vann! 🎉</h2>
+        <h2>🎉 Grattis du vann! 🎉</h2>
         <p>Du har löst pusslet!</p>
         <button onClick={onClose}>Spela igen</button>
       </div>
