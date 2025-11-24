@@ -104,7 +104,7 @@ export default function App() {
   const [showMainPage, setShowMainPage] = useState(true);
   const [showTutorialPage, setShowTutorialPage] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
-
+  const [soundOn, setSoundOn] = useState(true);
 
   // Holds DOM refs to each tile button by tile value (1..n)
   const tileRefs = useRef({});
@@ -145,10 +145,12 @@ export default function App() {
   function swapTiles(index1, index2) {
     setTiles((prev) => {
       const newTiles = [...prev];
-      const audio = moveSoundRef.current;
-      audio.pause();      
-      audio.currentTime = 0; 
-      audio.play();  
+      if (soundOn) {
+        const audio = moveSoundRef.current;
+        audio.pause();      
+        audio.currentTime = 0; 
+        audio.play();       
+      }
     
       [newTiles[index1], newTiles[index2]] = [newTiles[index2], newTiles[index1]];
 
@@ -477,6 +479,14 @@ function Popup({ onClose }) {
           <button type="button" >
             Tutorial
           </button>
+
+          <button
+            type="button"
+            onClick={() => setSoundOn(prev => !prev)}
+          >
+            {soundOn ? "🔊 Sound ON" : "🔇 Sound OFF"}
+          </button>
+
         </div>
 
           <p id="instructions">
