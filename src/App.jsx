@@ -509,7 +509,7 @@ export default function App() {
   if (showMainPage) {
     return (
       <div className="app main-page">
-        <h1 className="app-title">🧩Slid Puzzle 🧩</h1>
+        <h1 className="app-title">🧩 Skjutpussel 🧩</h1>
         <p>
           Välkommen till Sliding Puzzle spelet, här kan du testa din kluriga
           förmåga!
@@ -582,19 +582,19 @@ export default function App() {
             className="button"
             onClick={() => startGameWithDifficulty("easy")}
           >
-            Enkel – 2×2
+            Enkel 
           </button>
           <button
             className="button"
             onClick={() => startGameWithDifficulty("medium")}
           >
-            Medium – 3×3 (översta raden rätt)
+            Medium
           </button>
           <button
             className="button"
             onClick={() => startGameWithDifficulty("hard")}
           >
-            Svårt – 3×3 blandad
+            Svårt 
           </button>
         </div>
 
@@ -615,26 +615,10 @@ export default function App() {
 
   return (
     <main className="app" aria-label="Sliding puzzle game">
-      <h1 className="app-title">Slid pussel</h1>
+      <h1 className="app-title">Skjutpussel</h1>
 
       <section className="controls" aria-label="Game settings">
-        <label htmlFor="board-size" className="visually-hidden">
-          Spelets storlek
-        </label>
         <div className="control-group">
-          <span id="board-size-label">Spelets storlek:</span>
-          <select
-            id="board-size"
-            aria-labelledby="board-size-label"
-            value={size}
-            onChange={handleSizeChange}
-          >
-            {BOARD_SIZES.map((s) => (
-              <option key={s} value={s}>
-                {s} × {s}
-              </option>
-            ))}
-          </select>
 
           <button
             type="button"
