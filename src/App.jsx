@@ -9,7 +9,7 @@ function clamp(val, min, max) {
 }
 
 const MIN_BOARD_SIZE = 1
-const MAX_BOARD_SIZE = 5;
+const MAX_BOARD_SIZE = 3;
 const DEFAULT_BOARD_SIZE = 3;
 const BOARD_SIZES = Array.from({ length: MAX_BOARD_SIZE - MIN_BOARD_SIZE + 1 }, (_, i) => i + MIN_BOARD_SIZE);
 
@@ -431,6 +431,47 @@ function Popup({ onClose }) {
   );
 }
 
+function SettingsPanel({
+  resetGame,
+  size,
+  handleInstantWin,
+  toggleBoardFocus,
+  boardFocusMode,
+  soundOn,
+  setSoundOn
+}) {
+  const [isPanelOpen, setIsPanelOpen] = useState(false);
+
+
+  return (
+    <>
+      <button onClick={() => setIsPanelOpen(true)}>⚙️ Inställningar</button>
+
+     <div className={`side-panel ${isPanelOpen ? "open" : ""}`}>
+      {isPanelOpen && (
+        <div 
+          className="backdrop" 
+          onClick={() => setIsPanelOpen(false)}
+        ></div>
+      )}
+      {/* Close button */}
+      <button onClick={() => setIsPanelOpen(false)}>❌</button>
+
+      {/* These buttons do NOT close the panel */}
+      <button onClick={() => resetGame(size)}>Ny omgång</button>
+      <button onClick={handleInstantWin}>Vinn nu</button>
+      <button onClick={toggleBoardFocus}>
+        {boardFocusMode ? "EJ Fokus på Pussel" : "Fokus på Pussel"}
+      </button>
+      <button onClick={() => setSoundOn(prev => !prev)}>
+        {soundOn ? "🔊 Ljud PÅ" : "🔇 Ljud AV"}
+      </button>
+    </div>
+
+    </>
+  );
+  }
+
   return (
     <main
       className="app"
@@ -445,6 +486,7 @@ function Popup({ onClose }) {
         <label htmlFor="board-size" className="visually-hidden">
           Spelet storlek
         </label>
+
         <div className="control-group">
           <span id="board-size-label">Spelets storlek:</span>
           <select
@@ -468,25 +510,19 @@ function Popup({ onClose }) {
             Vinn nu
           </button>
 
-          <button
-            type="button"
-            onClick={toggleBoardFocus}
-            aria-pressed={boardFocusMode}
-          >
-            {boardFocusMode ? "EJ Fokus på Pussel" : "Fokus på Pussel"}
-          </button>
-
-          <button type="button" >
-            Tutorial
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setSoundOn(prev => !prev)}
-          >
-            {soundOn ? "🔊 Ljud PÅ" : "🔇 Ljud AV"}
-          </button>
-
+          <section className="controls" aria-label="Game settings">
+        {/* Existing controls remain, but buttons can be removed if moved to panel */}
+        
+        <SettingsPanel
+          resetGame={resetGame}
+          size={size}
+          handleInstantWin={handleInstantWin}
+          toggleBoardFocus={toggleBoardFocus}
+          boardFocusMode={boardFocusMode}
+          soundOn={soundOn}
+          setSoundOn={setSoundOn}
+        />
+      </section>
         </div>
 
           <p id="instructions">
