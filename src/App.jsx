@@ -184,12 +184,18 @@ function SettingsPanel({
             </button>
 
             <button type="button" onClick={() => resetGame(size)}>
+              Hur speler jag
+            </button>
+            <button type="button" onClick={() => resetGame(size)}>
               Ny omgång
             </button>
             <button type="button" onClick={handleInstantWin}>
               Vinn nu
             </button>
-            <button type="button" onClick={toggleBoardFocus}>
+            <button type="button" onClick={() => { 
+              toggleBoardFocus();
+              setIsPanelOpen(false) 
+            }}>
               {boardFocusMode ? "EJ Fokus på Pussel" : "Fokus på Pussel"}
             </button>
             <button
