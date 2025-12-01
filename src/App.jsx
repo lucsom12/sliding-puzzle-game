@@ -240,20 +240,20 @@ export default function App() {
   // Holds DOM refs to each tile button by tile value (1..n)
   const tileRefs = useRef({});
 
-  // Global keyboard controls: arrow keys move the empty space
-  useEffect(() => {
-    function handleKeyDown(e) {
-      if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
-        e.preventDefault();
-        const direction = e.key.replace("Arrow", "").toLowerCase();
-        moveUsingKeyboard(direction);
-      }
-    }
+  // // Global keyboard controls: arrow keys move the empty space
+  // useEffect(() => {
+  //   function handleKeyDown(e) {
+  //     if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
+  //       e.preventDefault();
+  //       const direction = e.key.replace("Arrow", "").toLowerCase();
+  //       moveUsingKeyboard(direction);
+  //     }
+  //   }
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  //   window.addEventListener("keydown", handleKeyDown);
+  //   return () => window.removeEventListener("keydown", handleKeyDown);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   function resetGame(newSize = size, newDifficulty = difficulty) {
     let boardSize = newSize;
@@ -323,6 +323,7 @@ export default function App() {
         setStatusMessage(solvedMessage);
         setLiveMessage(solvedMessage);
         setShowPopup(true);
+        setBoardFocusMode(false);
       }
 
       return newTiles;
@@ -477,29 +478,29 @@ export default function App() {
     }
   }
 
-  function moveUsingKeyboard(direction) {
-    const emptyIndex = tiles.indexOf(0);
-    const row = Math.floor(emptyIndex / size);
-    const col = emptyIndex % size;
+  // function moveUsingKeyboard(direction) {
+  //   const emptyIndex = tiles.indexOf(0);
+  //   const row = Math.floor(emptyIndex / size);
+  //   const col = emptyIndex % size;
 
-    let targetIndex = null;
+  //   let targetIndex = null;
 
-    if (direction === "up" && row < size - 1) {
-      targetIndex = emptyIndex + size;
-    } else if (direction === "down" && row > 0) {
-      targetIndex = emptyIndex - size;
-    } else if (direction === "left" && col < size - 1) {
-      targetIndex = emptyIndex + 1;
-    } else if (direction === "right" && col > 0) {
-      targetIndex = emptyIndex - 1;
-    }
+  //   if (direction === "up" && row < size - 1) {
+  //     targetIndex = emptyIndex + size;
+  //   } else if (direction === "down" && row > 0) {
+  //     targetIndex = emptyIndex - size;
+  //   } else if (direction === "left" && col < size - 1) {
+  //     targetIndex = emptyIndex + 1;
+  //   } else if (direction === "right" && col > 0) {
+  //     targetIndex = emptyIndex - 1;
+  //   }
 
-    if (targetIndex !== null) {
-      swapTiles(targetIndex, emptyIndex);
-    } else {
-      setLiveMessage("Cannot move in that direction.");
-    }
-  }
+  //   if (targetIndex !== null) {
+  //     swapTiles(targetIndex, emptyIndex);
+  //   } else {
+  //     setLiveMessage("Cannot move in that direction.");
+  //   }
+  // }
 
   function handleInstantWin() {
     const solved = createSolvedBoard(size);
