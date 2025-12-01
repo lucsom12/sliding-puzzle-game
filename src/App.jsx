@@ -365,8 +365,8 @@ export default function App() {
   if (showMainPage) {
   return (
     <div className="app main-page">
-      <h1 className="app-title">🧩Sliding Puzzle 🧩</h1>
-      <p> Välkommen till Sliding Puzzle spelet, här kan du testa din kluriga egenskaper! </p>
+      <h1 className="app-title">🧩Slid Puzzle 🧩</h1>
+      <p> Välkommen till Sliding Puzzle spelet, här kan du testa din kluriga förmåga! </p>
       <div className="button-container">
       <button
         className="button"
@@ -381,7 +381,7 @@ export default function App() {
           setShowTutorialPage(true);
       }}
       >
-        Tutorial
+        Hur spelar jag
       </button>
       </div>
     </div>
@@ -473,7 +473,7 @@ function Popup({ onClose }) {
             onClick={toggleBoardFocus}
             aria-pressed={boardFocusMode}
           >
-            {boardFocusMode ? "Unfocus game board" : "Focus game board"}
+            {boardFocusMode ? "EJ Fokus på Pussel" : "Fokus på Pussel"}
           </button>
 
           <button type="button" >
@@ -484,7 +484,7 @@ function Popup({ onClose }) {
             type="button"
             onClick={() => setSoundOn(prev => !prev)}
           >
-            {soundOn ? "🔊 Sound ON" : "🔇 Sound OFF"}
+            {soundOn ? "🔊 Ljud PÅ" : "🔇 Ljud AV"}
           </button>
 
         </div>
