@@ -2,6 +2,8 @@ import React, { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import "./App.css";
 import moveSoundFile from "./assets/Sounds/MoveSound.mp3";
+import winSoundFile from "./assets/Sounds/WinSound.mp3";
+
 
 function clamp(val, min, max) {
   return Math.min(max, Math.max(min, val));
@@ -133,7 +135,7 @@ function generateBoardForDifficulty(size, difficulty) {
   return shuffleBoard(size);
 }
 
-function Popup({ onClose}) {
+function Popup({ onClose }) {
 
   return (
     <div className="popup-overlay">
@@ -193,9 +195,9 @@ function SettingsPanel({
             <button type="button" onClick={handleInstantWin}>
               Vinn nu
             </button>
-            <button type="button" onClick={() => { 
+            <button type="button" onClick={() => {
               toggleBoardFocus();
-              setIsPanelOpen(false) 
+              setIsPanelOpen(false)
             }}>
               {boardFocusMode ? "EJ Fokus på Pussel" : "Fokus på Pussel"}
             </button>
@@ -231,13 +233,15 @@ export default function App() {
   const [liveMessage, setLiveMessage] = useState("");
   const [boardFocusMode, setBoardFocusMode] = useState(false);
   const moveSoundRef = useRef(new Audio(moveSoundFile));
+  const winSoundRef = useRef(new Audio(winSoundFile));
+ 
 
   const [showMainPage, setShowMainPage] = useState(true);
   const [showTutorialPage, setShowTutorialPage] = useState(false);
   const [showDifficultyPage, setShowDifficultyPage] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [soundOn, setSoundOn] = useState(true);
-
+  const [showFullImage, setShowFullImage] = useState(false);
   // Holds DOM refs to each tile button by tile value (1..n)
   const tileRefs = useRef({});
 
@@ -276,6 +280,9 @@ export default function App() {
       "New puzzle! Use arrow keys or click tiles to move."
     );
     setLiveMessage("New puzzle started.");
+    setShowPopup(false);
+    setShowFullImage(false);
+
   }
 
   function handleSizeChange(e) {
@@ -323,9 +330,25 @@ export default function App() {
         const solvedMessage = `Puzzle solved in ${newMoveCount} moves! 🎉`;
         setStatusMessage(solvedMessage);
         setLiveMessage(solvedMessage);
-        setShowPopup(true);
         setBoardFocusMode(false);
+
+        // 1. Visa helbilden ovanpå brädet
+        setShowFullImage(true);
+
+        //2. spela ljud
+        if (soundOn) {
+          const audio = winSoundRef.current;
+          audio.pause();
+          audio.currentTime = 0;
+          audio.play();
+        }
+
+        // 3. Vänta lite, visa popup efteråt
+        setTimeout(() => {
+          setShowPopup(true);
+        }, 3000); // t.ex. 1 sekund
       }
+
 
       return newTiles;
     });
@@ -518,7 +541,7 @@ export default function App() {
     return (
       <div className="app main-page">
         <h1 className="app-title">🧩 Pussel 🧩</h1>
-        <p>
+        <p id="instructions">
           Välkommen till Sliding Puzzle spelet, här kan du testa din kluriga
           förmåga!
         </p>
@@ -584,13 +607,13 @@ export default function App() {
   if (showDifficultyPage) {
     return (
       <div className="app difficulty-page">
-        <h1 className="app-title">Välj svårighetsgrad</h1>
+        <h1 className="app-title">🧩Välj svårighetsgrad🧩</h1>
         <div className="button-container">
           <button
             className="button"
             onClick={() => startGameWithDifficulty("easy")}
           >
-            Enkel 
+            Enkel
           </button>
           <button
             className="button"
@@ -602,7 +625,7 @@ export default function App() {
             className="button"
             onClick={() => startGameWithDifficulty("hard")}
           >
-            Svårt 
+            Svårt
           </button>
         </div>
 
@@ -627,114 +650,131 @@ export default function App() {
 
       <div className="game-layout">
 
-      <section className="controls" aria-label="Game settings">
-        <div className="control-group">
+        <section className="controls" aria-label="Game settings">
+          <div className="control-group">
 
-          <button
-            type="button"
-            onClick={() => setShowDifficultyPage(true)}
-          >
-            Svårighetsgrad
-          </button>
+            <button
+              type="button"
+              onClick={() => setShowDifficultyPage(true)}
+            >
+              Svårighetsgrad
+            </button>
 
-          {/* KNAPP + PANEL PÅ SIDAN */}
-          <SettingsPanel
-            resetGame={resetGame}
-            size={size}
-            handleInstantWin={handleInstantWin}
-            toggleBoardFocus={toggleBoardFocus}
-            boardFocusMode={boardFocusMode}
-            soundOn={soundOn}
-            setSoundOn={setSoundOn}
-          />
+            {/* KNAPP + PANEL PÅ SIDAN */}
+            <SettingsPanel
+              resetGame={resetGame}
+              size={size}
+              handleInstantWin={handleInstantWin}
+              toggleBoardFocus={toggleBoardFocus}
+              boardFocusMode={boardFocusMode}
+              soundOn={soundOn}
+              setSoundOn={setSoundOn}
+            />
+          </div>
+
+          <p id="instructions">
+            Använd “Fokus på Pussel" för att skifta mellan tillgängliga rutor med
+            Tab. Tryck på esc för att avsluta Pussel Fokus.
+          </p>
+        </section>
+
+        <div className="visually-hidden" aria-live="polite" aria-atomic="true">
+          {liveMessage}
         </div>
 
-        <p id="instructions">
-          Använd “Fokus på Pussel" för att skifta mellan tillgängliga rutor med
-          Tab. Tryck på Escape för att avsluta Pussel Fokus.
-        </p>
-      </section>
-
-      <div className="visually-hidden" aria-live="polite" aria-atomic="true">
-        {liveMessage}
-      </div>
-
-      <section
-        className="puzzle-wrapper"
-        aria-label={`${size} by ${size} sliding puzzle board`}
-      >
-        <div
-          className="puzzle-grid"
-          style={{
-            gridTemplateColumns: `repeat(${size}, minmax(6rem, 8rem))`,
-          }}
+        <section
+          className="puzzle-wrapper"
+          aria-label={`${size} by ${size} sliding puzzle board`}
         >
-          {tiles.map((value, index) => {
-            if (value === 0) {
-              return (
-                <div
-                  key="empty"
-                  className="tile tile-empty"
-                  aria-hidden="true"
-                />
-              );
-            }
-
-            const movable = isTileMovable(index, tiles, size);
-
-            const col = (value - 1) % size;
-            const row = Math.floor((value - 1) / size);
-
-            const step = 100 / (size - 1);
-
-            return (
-              <motion.button
-                key={value}
-                layout
-                className="tile"
-                type="button"
-                ref={(el) => {
-                  tileRefs.current[value] = el;
-                }}
-                onClick={() => tryMoveTile(index)}
-                whileTap={{ scale: 0.95 }}
-                transition={{
-                  type: "spring",
-                  stiffness: 500,
-                  damping: 30,
-                }}
-                tabIndex={movable ? 0 : -1}
-                aria-disabled={!movable}
-                aria-label={
-                  movable
-                    ? `Tile ${value}. Press to move into the empty space.`
-                    : `Tile ${value}. Not currently movable.`
+          <div className="puzzle-grid-wrapper">
+            <div
+              className={`puzzle-grid ${showFullImage ? "puzzle-grid--faded" : ""}`}
+              style={{
+                gridTemplateColumns: `repeat(${size}, minmax(6rem, 8rem))`,
+              }}
+            >
+              {tiles.map((value, index) => {
+                if (value === 0) {
+                  return (
+                    <div
+                      key="empty"
+                      className="tile tile-empty"
+                      aria-hidden="true"
+                    />
+                  );
                 }
+
+                const movable = isTileMovable(index, tiles, size);
+
+                const col = (value - 1) % size;
+                const row = Math.floor((value - 1) / size);
+
+                const step = 100 / (size - 1);
+
+                return (
+                  <motion.button
+                    key={value}
+                    layout
+                    className="tile"
+                    type="button"
+                    ref={(el) => {
+                      tileRefs.current[value] = el;
+                    }}
+                    onClick={() => tryMoveTile(index)}
+                    whileTap={{ scale: 0.95 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 500,
+                      damping: 30,
+                    }}
+                    tabIndex={movable ? 0 : -1}
+                    aria-disabled={!movable}
+                    aria-label={
+                      movable
+                        ? `Tile ${value}. Press to move into the empty space.`
+                        : `Tile ${value}. Not currently movable.`
+                    }
+                    style={{
+                      //  backgroundImage: "url('/src/assets/Images/lorax.png')", 
+                      backgroundImage:
+                        difficulty === "easy"
+                          ? "url('/src/assets/Images/regnbåge.png')"
+                          : "url('/src/assets/Images/nyTomte.png')",
+                      backgroundSize: `${size * 100}% ${size * 100}%`,
+                      backgroundPosition: `${col * step}% ${row * step}%`,
+                      backgroundRepeat: "no-repeat",
+                    }}
+                  />
+                );
+              })}
+            </div>
+
+            {showFullImage && (
+              <div
+                className="puzzle-full-image"
+                aria-hidden="true"
                 style={{
-               //  backgroundImage: "url('/src/assets/Images/lorax.png')", 
                   backgroundImage:
                     difficulty === "easy"
                       ? "url('/src/assets/Images/regnbåge.png')"
-                      : "url('/src/assets/Images/jul.png')",
-                  backgroundSize: `${size * 100}% ${size * 100}%`,
-                  backgroundPosition: `${col * step}% ${row * step}%`,
-                  backgroundRepeat: "no-repeat",
+                      : "url('/src/assets/Images/nyTomte.png')",
                 }}
               />
-            );
-          })}
-        </div>
-      </section>
+            )}
+          </div>
+        </section>
 
-      {showPopup && (
-        <Popup
-          onClose={() => {
-            setShowPopup(false);
-            resetGame(size, difficulty);
-          }}
-        />
-      )}
+        {
+          showPopup && (
+            <Popup
+              onClose={() => {
+                setShowPopup(false);
+                resetGame(size, difficulty);
+              }}
+            />
+          )
+        }
       </div>
-    </main>
+    </main >
   );
 }

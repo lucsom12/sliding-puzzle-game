@@ -19,7 +19,32 @@ body {
   justify-content: center;
   align-items: stretch;
   background: radial-gradient(circle at top, #ffffff 0, #e4e4e4 60%, #d0d0d0 100%);
+  position: relative; /* needed for pseudo-element */
+  overflow: hidden;
 }
+
+/* Faded background image */
+body::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("/src/assets/Images/background.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.2;      /* adjust opacity for fade effect */
+  z-index: 0;         /* behind all content */
+}
+
+/* Make sure your content is above the background */
+body > * {
+  position: relative;
+  z-index: 1;
+}
+
 
 #root {
   width: 100%;
@@ -32,7 +57,8 @@ body {
 select,
 button {
   font: inherit;
-  padding: 0.4rem 0.75rem;
+  font-size: 1.1rem;      
+  padding: 0.6rem 1rem;
   border-radius: 0.5rem;
   border: 1px solid #444;
   background-color: #ffffff;
