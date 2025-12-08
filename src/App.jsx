@@ -625,6 +625,8 @@ export default function App() {
     <main className="app" aria-label="Sliding puzzle game">
       <h1 className="app-title">🧩 Pussel 🧩</h1>
 
+      <div className="game-layout">
+
       <section className="controls" aria-label="Game settings">
         <div className="control-group">
 
@@ -732,6 +734,7 @@ export default function App() {
           }}
         />
       )}
+      </div>
     </main>
   );
 }
