@@ -133,7 +133,7 @@ function generateBoardForDifficulty(size, difficulty) {
   return shuffleBoard(size);
 }
 
-function Popup({ onClose}) {
+function Popup({ onClose }) {
 
   return (
     <div className="popup-overlay">
@@ -193,9 +193,9 @@ function SettingsPanel({
             <button type="button" onClick={handleInstantWin}>
               Vinn nu
             </button>
-            <button type="button" onClick={() => { 
+            <button type="button" onClick={() => {
               toggleBoardFocus();
-              setIsPanelOpen(false) 
+              setIsPanelOpen(false)
             }}>
               {boardFocusMode ? "EJ Fokus på Pussel" : "Fokus på Pussel"}
             </button>
@@ -237,7 +237,7 @@ export default function App() {
   const [showDifficultyPage, setShowDifficultyPage] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [soundOn, setSoundOn] = useState(true);
-
+  const [showFullImage, setShowFullImage] = useState(false);
   // Holds DOM refs to each tile button by tile value (1..n)
   const tileRefs = useRef({});
 
@@ -276,6 +276,9 @@ export default function App() {
       "New puzzle! Use arrow keys or click tiles to move."
     );
     setLiveMessage("New puzzle started.");
+    setShowPopup(false);
+    setShowFullImage(false);
+
   }
 
   function handleSizeChange(e) {
@@ -323,9 +326,17 @@ export default function App() {
         const solvedMessage = `Puzzle solved in ${newMoveCount} moves! 🎉`;
         setStatusMessage(solvedMessage);
         setLiveMessage(solvedMessage);
-        setShowPopup(true);
         setBoardFocusMode(false);
+
+        // 1. Visa helbilden ovanpå brädet
+        setShowFullImage(true);
+
+        // 2. Vänta lite, visa popup efteråt
+        setTimeout(() => {
+          setShowPopup(true);
+        }, 3000); // t.ex. 1 sekund
       }
+
 
       return newTiles;
     });
@@ -590,7 +601,7 @@ export default function App() {
             className="button"
             onClick={() => startGameWithDifficulty("easy")}
           >
-            Enkel 
+            Enkel
           </button>
           <button
             className="button"
@@ -602,7 +613,7 @@ export default function App() {
             className="button"
             onClick={() => startGameWithDifficulty("hard")}
           >
-            Svårt 
+            Svårt
           </button>
         </div>
 
@@ -661,77 +672,94 @@ export default function App() {
         className="puzzle-wrapper"
         aria-label={`${size} by ${size} sliding puzzle board`}
       >
-        <div
-          className="puzzle-grid"
-          style={{
-            gridTemplateColumns: `repeat(${size}, minmax(6rem, 8rem))`,
-          }}
-        >
-          {tiles.map((value, index) => {
-            if (value === 0) {
+        <div className="puzzle-grid-wrapper">
+          <div
+            className={`puzzle-grid ${showFullImage ? "puzzle-grid--faded" : ""}`}
+            style={{
+              gridTemplateColumns: `repeat(${size}, minmax(6rem, 8rem))`,
+            }}
+          >
+            {tiles.map((value, index) => {
+              if (value === 0) {
+                return (
+                  <div
+                    key="empty"
+                    className="tile tile-empty"
+                    aria-hidden="true"
+                  />
+                );
+              }
+
+              const movable = isTileMovable(index, tiles, size);
+
+              const col = (value - 1) % size;
+              const row = Math.floor((value - 1) / size);
+
+              const step = 100 / (size - 1);
+
               return (
-                <div
-                  key="empty"
-                  className="tile tile-empty"
-                  aria-hidden="true"
+                <motion.button
+                  key={value}
+                  layout
+                  className="tile"
+                  type="button"
+                  ref={(el) => {
+                    tileRefs.current[value] = el;
+                  }}
+                  onClick={() => tryMoveTile(index)}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 500,
+                    damping: 30,
+                  }}
+                  tabIndex={movable ? 0 : -1}
+                  aria-disabled={!movable}
+                  aria-label={
+                    movable
+                      ? `Tile ${value}. Press to move into the empty space.`
+                      : `Tile ${value}. Not currently movable.`
+                  }
+                  style={{
+                    //  backgroundImage: "url('/src/assets/Images/lorax.png')", 
+                    backgroundImage:
+                      difficulty === "easy"
+                        ? "url('/src/assets/Images/regnbåge.png')"
+                        : "url('/src/assets/Images/jul.png')",
+                    backgroundSize: `${size * 100}% ${size * 100}%`,
+                    backgroundPosition: `${col * step}% ${row * step}%`,
+                    backgroundRepeat: "no-repeat",
+                  }}
                 />
               );
-            }
+            })}
+          </div>
 
-            const movable = isTileMovable(index, tiles, size);
-
-            const col = (value - 1) % size;
-            const row = Math.floor((value - 1) / size);
-
-            const step = 100 / (size - 1);
-
-            return (
-              <motion.button
-                key={value}
-                layout
-                className="tile"
-                type="button"
-                ref={(el) => {
-                  tileRefs.current[value] = el;
-                }}
-                onClick={() => tryMoveTile(index)}
-                whileTap={{ scale: 0.95 }}
-                transition={{
-                  type: "spring",
-                  stiffness: 500,
-                  damping: 30,
-                }}
-                tabIndex={movable ? 0 : -1}
-                aria-disabled={!movable}
-                aria-label={
-                  movable
-                    ? `Tile ${value}. Press to move into the empty space.`
-                    : `Tile ${value}. Not currently movable.`
-                }
-                style={{
-               //  backgroundImage: "url('/src/assets/Images/lorax.png')", 
-                  backgroundImage:
-                    difficulty === "easy"
-                      ? "url('/src/assets/Images/regnbåge.png')"
-                      : "url('/src/assets/Images/jul.png')",
-                  backgroundSize: `${size * 100}% ${size * 100}%`,
-                  backgroundPosition: `${col * step}% ${row * step}%`,
-                  backgroundRepeat: "no-repeat",
-                }}
-              />
-            );
-          })}
+          {showFullImage && (
+            <div
+              className="puzzle-full-image"
+              aria-hidden="true"
+              style={{
+                backgroundImage:
+                  difficulty === "easy"
+                    ? "url('/src/assets/Images/regnbåge.png')"
+                    : "url('/src/assets/Images/jul.png')",
+              }}
+            />
+          )}
         </div>
       </section>
 
-      {showPopup && (
-        <Popup
-          onClose={() => {
-            setShowPopup(false);
-            resetGame(size, difficulty);
-          }}
-        />
-      )}
-    </main>
+      {
+        showPopup && (
+          <Popup
+            onClose={() => {
+              setShowPopup(false);
+              resetGame(size, difficulty);
+            }}
+          />
+        )
+      }
+    </main >
   );
 }

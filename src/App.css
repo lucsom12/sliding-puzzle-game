@@ -11,9 +11,11 @@
   background-color: #ffffff;
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
   display: flex;
-  flex-direction: column; /* Se till att innehållet staplas vertikalt */
+  flex-direction: column;
+  /* Se till att innehållet staplas vertikalt */
   align-items: center;
-  box-sizing: border-box; /* Scale when zoomed */
+  box-sizing: border-box;
+  /* Scale when zoomed */
 
 }
 
@@ -31,12 +33,14 @@
 
 .control-group {
   display: flex;
-  flex-wrap: wrap; 
+  flex-wrap: wrap;
   gap: 0.75rem;
-  justify-content: center; /* centers when wrapping */
+  justify-content: center;
+  /* centers when wrapping */
   align-items: center;
   margin-bottom: 0.5rem;
-  width: 100%;         /* avoids overflow */
+  width: 100%;
+  /* avoids overflow */
 }
 
 .control-group span {
@@ -59,16 +63,25 @@
   justify-content: center;
 }
 
+.puzzle-grid-wrapper {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
 .puzzle-grid {
   display: grid;
   gap: 0.4rem;
   padding: 0.5rem;
   border-radius: 1rem;
   background: #1b1f24;
-
-  width: 100%;               
-  max-width: 90vw;          
+  width: 100%;
+  max-width: 90vw;
   box-sizing: border-box;
+
+  transition: transform 0.35s ease,
+    box-shadow 0.35s ease,
+    filter 0.35s ease;
 }
 
 /* Puzzle tiles */
@@ -82,11 +95,49 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  aspect-ratio: 1 / 1;     /* keeps tiles square */
+  aspect-ratio: 1 / 1;
+  /* keeps tiles square */
   min-width: clamp(60px, 18vw, 120px);
   min-height: clamp(60px, 18vw, 120px);
   box-shadow: 0 3px 0 rgba(0, 0, 0, 0.3);
 }
+
+.puzzle-grid--faded {
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.puzzle-full-image {
+  position: absolute;
+  inset: 0;
+  /* täck hela wrappern */
+  border-radius: 1rem;
+  /* matcha tile-radien */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  /* för säkerhets skull */
+  animation: fullImageZoom 0.5s ease forwards;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.6);
+  /* mer fokus */
+  transform-origin: center center;
+}
+
+/* Liten zoom + fade-in-animation när man vinner */
+@keyframes fullImageZoom {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1.08);
+    /* gör den lite större/in-fokus */
+  }
+}
+
 
 .tile-empty {
   border-radius: 0.35rem;
@@ -106,7 +157,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -118,7 +169,7 @@
   padding: 2rem;
   border-radius: 10px;
   text-align: center;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 .popup-content button {
@@ -130,18 +181,25 @@
 
 .tutorial-images {
   display: flex;
-  flex-direction: column;   /* Stack images vertically */
-  gap: 1rem;                /* Space between images */
-  align-items: center;      /* Center images horizontally */
+  flex-direction: column;
+  /* Stack images vertically */
+  gap: 1rem;
+  /* Space between images */
+  align-items: center;
+  /* Center images horizontally */
   margin: 1rem 0;
   width: 100%;
 }
 
 .tutorial-image {
-  max-width: 80%;           /* Prevent image from being too wide */
-  height: auto;             /* Maintain aspect ratio */
-  border-radius: 0.5rem;    /* Rounded corners */
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2); /* Soft shadow */
+  max-width: 80%;
+  /* Prevent image from being too wide */
+  height: auto;
+  /* Maintain aspect ratio */
+  border-radius: 0.5rem;
+  /* Rounded corners */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  /* Soft shadow */
 }
 
 .settings-button {
@@ -150,19 +208,22 @@
   font-size: 16px;
   cursor: pointer;
 }
+
 /* Sidopanel */
 .side-panel {
   position: fixed;
   top: 0;
-  right: -320px;           /* Hidden off-screen */
+  right: -320px;
+  /* Hidden off-screen */
   width: 300px;
   height: 100%;
   background: #f5f5f5;
-  box-shadow: -2px 0 6px rgba(0,0,0,0.2);
+  box-shadow: -2px 0 6px rgba(0, 0, 0, 0.2);
   padding: 20px;
   display: flex;
   flex-direction: column;
-  transition: right 0.3s ease;  /* Smooth slide in/out */
+  transition: right 0.3s ease;
+  /* Smooth slide in/out */
   z-index: 1000;
   overflow-y: auto;
 }
@@ -187,14 +248,17 @@
   margin: 10px 0;
   border-radius: 6px;
   border: 1px solid #ccc;
-  background: #ffffff;       /* White background */
-  color: #333333;            /* Dark text for visibility */
+  background: #ffffff;
+  /* White background */
+  color: #333333;
+  /* Dark text for visibility */
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 8px;                 /* Space between icon and text if using emojis */
+  gap: 8px;
+  /* Space between icon and text if using emojis */
 }
 
 .side-panel button:not(:first-child):hover {
