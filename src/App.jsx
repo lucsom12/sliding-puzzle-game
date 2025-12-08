@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import "./App.css";
 import moveSoundFile from "./assets/Sounds/MoveSound.mp3";
 import winSoundFile from "./assets/Sounds/WinSound.mp3";
+import instructionsAudio from "./assets/Sounds/Instructions.mp3";
 
 
 function clamp(val, min, max) {
@@ -234,7 +235,7 @@ export default function App() {
   const [boardFocusMode, setBoardFocusMode] = useState(false);
   const moveSoundRef = useRef(new Audio(moveSoundFile));
   const winSoundRef = useRef(new Audio(winSoundFile));
- 
+  const instructionsRef = useRef(new Audio(instructionsAudio));
 
   const [showMainPage, setShowMainPage] = useState(true);
   const [showTutorialPage, setShowTutorialPage] = useState(false);
@@ -570,6 +571,7 @@ export default function App() {
   }
 
   if (showTutorialPage) {
+
     return (
       <div className="app tutorial-page">
         <h1 className="app-title">🧩 Hur man spelar 🧩</h1>
@@ -579,16 +581,13 @@ export default function App() {
         </p>
 
         <div className="tutorial-images">
-          <img
-            src="/src/assets/Images/Tutorial1.png"
-            alt="Tutorial steg 1"
-            className="tutorial-image"
-          />
-          <img
-            src="/src/assets/Images/Tutorial2.png"
-            alt="Tutorial steg 2"
-            className="tutorial-image"
-          />
+        <video src="/src/assets/Images/instruktionsVideoMedLjud.mp4" 
+          className="tutorial-image" controls /* shows play/pause bar */ 
+          autoPlay={false} 
+          loop={false} 
+        > 
+          Your browser does not support the video tag. 
+        </video>
         </div>
 
         <button
@@ -646,7 +645,7 @@ export default function App() {
 
   return (
     <main className="app" aria-label="Sliding puzzle game">
-      <h1 className="app-title">🧩 Pussel 🧩</h1>
+      <h1 className="app-title"> 🧩 Pussel 🧩</h1>
 
       <div className="game-layout">
 
@@ -674,7 +673,7 @@ export default function App() {
 
           <p id="instructions">
             Använd “Fokus på Pussel" för att skifta mellan tillgängliga rutor med
-            Tab. Tryck på esc för att avsluta Pussel Fokus.
+            Tab. Tryck på  <kbd>Esc</kbd> för att avsluta Pussel Fokus.
           </p>
         </section>
 

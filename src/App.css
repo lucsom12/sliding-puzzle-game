@@ -210,15 +210,13 @@
 }
 
 .tutorial-image {
-  max-width: 80%;
-  /* Prevent image from being too wide */
+  width: 700px;        /* FIXED smaller width */
+  max-width: 90%;      /* still shrink on small screens */
   height: auto;
-  /* Maintain aspect ratio */
   border-radius: 0.5rem;
-  /* Rounded corners */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  /* Soft shadow */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
+
 
 .settings-button {
   margin: 10px;
@@ -308,3 +306,12 @@
   line-height: 1.6;
 }
 
+/*Code to make the esc look like a button */
+kbd {
+  padding: 0.2em 0.4em;
+  background: #eee;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-family: monospace;
+  font-weight: 600;
+}
