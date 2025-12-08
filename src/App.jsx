@@ -636,130 +636,132 @@ export default function App() {
     <main className="app" aria-label="Sliding puzzle game">
       <h1 className="app-title">🧩 Pussel 🧩</h1>
 
-      <section className="controls" aria-label="Game settings">
-        <div className="control-group">
+      <div className="game-layout">
 
-          <button
-            type="button"
-            onClick={() => setShowDifficultyPage(true)}
-          >
-            Svårighetsgrad
-          </button>
+        <section className="controls" aria-label="Game settings">
+          <div className="control-group">
 
-          {/* KNAPP + PANEL PÅ SIDAN */}
-          <SettingsPanel
-            resetGame={resetGame}
-            size={size}
-            handleInstantWin={handleInstantWin}
-            toggleBoardFocus={toggleBoardFocus}
-            boardFocusMode={boardFocusMode}
-            soundOn={soundOn}
-            setSoundOn={setSoundOn}
-          />
-        </div>
+            <button
+              type="button"
+              onClick={() => setShowDifficultyPage(true)}
+            >
+              Svårighetsgrad
+            </button>
 
-        <p id="instructions">
-          Använd “Fokus på Pussel" för att skifta mellan tillgängliga rutor med
-          Tab. Tryck på Escape för att avsluta Pussel Fokus.
-        </p>
-      </section>
-
-      <div className="visually-hidden" aria-live="polite" aria-atomic="true">
-        {liveMessage}
-      </div>
-
-      <section
-        className="puzzle-wrapper"
-        aria-label={`${size} by ${size} sliding puzzle board`}
-      >
-        <div className="puzzle-grid-wrapper">
-          <div
-            className={`puzzle-grid ${showFullImage ? "puzzle-grid--faded" : ""}`}
-            style={{
-              gridTemplateColumns: `repeat(${size}, minmax(6rem, 8rem))`,
-            }}
-          >
-            {tiles.map((value, index) => {
-              if (value === 0) {
-                return (
-                  <div
-                    key="empty"
-                    className="tile tile-empty"
-                    aria-hidden="true"
-                  />
-                );
-              }
-
-              const movable = isTileMovable(index, tiles, size);
-
-              const col = (value - 1) % size;
-              const row = Math.floor((value - 1) / size);
-
-              const step = 100 / (size - 1);
-
-              return (
-                <motion.button
-                  key={value}
-                  layout
-                  className="tile"
-                  type="button"
-                  ref={(el) => {
-                    tileRefs.current[value] = el;
-                  }}
-                  onClick={() => tryMoveTile(index)}
-                  whileTap={{ scale: 0.95 }}
-                  transition={{
-                    type: "spring",
-                    stiffness: 500,
-                    damping: 30,
-                  }}
-                  tabIndex={movable ? 0 : -1}
-                  aria-disabled={!movable}
-                  aria-label={
-                    movable
-                      ? `Tile ${value}. Press to move into the empty space.`
-                      : `Tile ${value}. Not currently movable.`
-                  }
-                  style={{
-                    //  backgroundImage: "url('/src/assets/Images/lorax.png')", 
-                    backgroundImage:
-                      difficulty === "easy"
-                        ? "url('/src/assets/Images/regnbåge.png')"
-                        : "url('/src/assets/Images/jul.png')",
-                    backgroundSize: `${size * 100}% ${size * 100}%`,
-                    backgroundPosition: `${col * step}% ${row * step}%`,
-                    backgroundRepeat: "no-repeat",
-                  }}
-                />
-              );
-            })}
+            {/* KNAPP + PANEL PÅ SIDAN */}
+            <SettingsPanel
+              resetGame={resetGame}
+              size={size}
+              handleInstantWin={handleInstantWin}
+              toggleBoardFocus={toggleBoardFocus}
+              boardFocusMode={boardFocusMode}
+              soundOn={soundOn}
+              setSoundOn={setSoundOn}
+            />
           </div>
 
-          {showFullImage && (
+          <p id="instructions">
+            Använd “Fokus på Pussel" för att skifta mellan tillgängliga rutor med
+            Tab. Tryck på Escape för att avsluta Pussel Fokus.
+          </p>
+        </section>
+
+        <div className="visually-hidden" aria-live="polite" aria-atomic="true">
+          {liveMessage}
+        </div>
+
+        <section
+          className="puzzle-wrapper"
+          aria-label={`${size} by ${size} sliding puzzle board`}
+        >
+          <div className="puzzle-grid-wrapper">
             <div
-              className="puzzle-full-image"
-              aria-hidden="true"
+              className={`puzzle-grid ${showFullImage ? "puzzle-grid--faded" : ""}`}
               style={{
-                backgroundImage:
-                  difficulty === "easy"
-                    ? "url('/src/assets/Images/regnbåge.png')"
-                    : "url('/src/assets/Images/jul.png')",
+                gridTemplateColumns: `repeat(${size}, minmax(6rem, 8rem))`,
+              }}
+            >
+              {tiles.map((value, index) => {
+                if (value === 0) {
+                  return (
+                    <div
+                      key="empty"
+                      className="tile tile-empty"
+                      aria-hidden="true"
+                    />
+                  );
+                }
+
+                const movable = isTileMovable(index, tiles, size);
+
+                const col = (value - 1) % size;
+                const row = Math.floor((value - 1) / size);
+
+                const step = 100 / (size - 1);
+
+                return (
+                  <motion.button
+                    key={value}
+                    layout
+                    className="tile"
+                    type="button"
+                    ref={(el) => {
+                      tileRefs.current[value] = el;
+                    }}
+                    onClick={() => tryMoveTile(index)}
+                    whileTap={{ scale: 0.95 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 500,
+                      damping: 30,
+                    }}
+                    tabIndex={movable ? 0 : -1}
+                    aria-disabled={!movable}
+                    aria-label={
+                      movable
+                        ? `Tile ${value}. Press to move into the empty space.`
+                        : `Tile ${value}. Not currently movable.`
+                    }
+                    style={{
+                      //  backgroundImage: "url('/src/assets/Images/lorax.png')", 
+                      backgroundImage:
+                        difficulty === "easy"
+                          ? "url('/src/assets/Images/regnbåge.png')"
+                          : "url('/src/assets/Images/jul.png')",
+                      backgroundSize: `${size * 100}% ${size * 100}%`,
+                      backgroundPosition: `${col * step}% ${row * step}%`,
+                      backgroundRepeat: "no-repeat",
+                    }}
+                  />
+                );
+              })}
+            </div>
+
+            {showFullImage && (
+              <div
+                className="puzzle-full-image"
+                aria-hidden="true"
+                style={{
+                  backgroundImage:
+                    difficulty === "easy"
+                      ? "url('/src/assets/Images/regnbåge.png')"
+                      : "url('/src/assets/Images/jul.png')",
+                }}
+              />
+            )}
+          </div>
+        </section>
+
+        {
+          showPopup && (
+            <Popup
+              onClose={() => {
+                setShowPopup(false);
+                resetGame(size, difficulty);
               }}
             />
-          )}
-        </div>
-      </section>
-
-      {
-        showPopup && (
-          <Popup
-            onClose={() => {
-              setShowPopup(false);
-              resetGame(size, difficulty);
-            }}
-          />
-        )
-      }
+          )
+        }
     </main >
   );
 }
