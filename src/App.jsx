@@ -541,8 +541,18 @@ export default function App() {
           >
             Hur spelar jag
           </button>
+
+          <SettingsPanel
+            resetGame={resetGame}
+            size={size}
+            handleInstantWin={handleInstantWin}
+            toggleBoardFocus={toggleBoardFocus}
+            boardFocusMode={boardFocusMode}
+            soundOn={soundOn}
+            setSoundOn={setSoundOn}
+          />
         </div>
-      </div>
+        </div>
     );
   }
 
@@ -651,7 +661,7 @@ export default function App() {
 
         <p id="instructions">
           Använd “Fokus på Pussel" för att skifta mellan tillgängliga rutor med
-          Tab. Tryck på Escape för att avsluta Pussel Fokus.
+          Tab. Tryck på esc för att avsluta Pussel Fokus.
         </p>
       </section>
 
