@@ -133,7 +133,8 @@ function generateBoardForDifficulty(size, difficulty) {
   return shuffleBoard(size);
 }
 
-function Popup({ onClose }) {
+function Popup({ onClose}) {
+
   return (
     <div className="popup-overlay">
       <div className="popup-content">
@@ -515,7 +516,7 @@ export default function App() {
   if (showMainPage) {
     return (
       <div className="app main-page">
-        <h1 className="app-title">🧩 Skjutpussel 🧩</h1>
+        <h1 className="app-title">🧩 Pussel 🧩</h1>
         <p>
           Välkommen till Sliding Puzzle spelet, här kan du testa din kluriga
           förmåga!
@@ -621,7 +622,7 @@ export default function App() {
 
   return (
     <main className="app" aria-label="Sliding puzzle game">
-      <h1 className="app-title">Skjutpussel</h1>
+      <h1 className="app-title">🧩 Pussel 🧩</h1>
 
       <section className="controls" aria-label="Game settings">
         <div className="control-group">
@@ -707,7 +708,11 @@ export default function App() {
                     : `Tile ${value}. Not currently movable.`
                 }
                 style={{
-                  backgroundImage: "url('/src/assets/Images/lorax.png')",
+               //  backgroundImage: "url('/src/assets/Images/lorax.png')", 
+                  backgroundImage:
+                    difficulty === "easy"
+                      ? "url('/src/assets/Images/regnbåge.png')"
+                      : "url('/src/assets/Images/jul.png')",
                   backgroundSize: `${size * 100}% ${size * 100}%`,
                   backgroundPosition: `${col * step}% ${row * step}%`,
                   backgroundRepeat: "no-repeat",
