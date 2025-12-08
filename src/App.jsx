@@ -607,7 +607,7 @@ export default function App() {
         </div>
 
         <button
-          className="button"
+          className="button back-button"
           onClick={() => {
             setShowDifficultyPage(false);
             setShowMainPage(true);

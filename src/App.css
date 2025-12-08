@@ -225,3 +225,10 @@
   margin-top: 1rem;
 
 }
+
+.back-button {
+  flex-basis: 100%;   /* forces a new row */
+  justify-self: center; /* centers horizontally */
+  margin-top: 1rem;   /* optional extra spacing */
+}
+
