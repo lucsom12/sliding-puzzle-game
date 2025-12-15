@@ -5,7 +5,6 @@ import moveSoundFile from "./assets/Sounds/MoveSound.mp3";
 import winSoundFile from "./assets/Sounds/WinSound.mp3";
 import instructionsAudio from "./assets/Sounds/Instructions.mp3";
 
-
 function clamp(val, min, max) {
   return Math.min(max, Math.max(min, val));
 }
@@ -137,7 +136,6 @@ function generateBoardForDifficulty(size, difficulty) {
 }
 
 function Popup({ onClose }) {
-
   return (
     <div className="popup-overlay">
       <div className="popup-content">
@@ -149,7 +147,7 @@ function Popup({ onClose }) {
   );
 }
 
-// === SIDOPANEL FÖR INSTÄLLNINGAR – SOM INNAN ===
+// === SIDOPANEL FÖR INSTÄLLNINGAR ===
 function SettingsPanel({
   resetGame,
   size,
@@ -158,6 +156,9 @@ function SettingsPanel({
   boardFocusMode,
   soundOn,
   setSoundOn,
+  onHowToPlay,      // callback för "Hur spelar jag?"
+  onGoToMainMenu,   // callback för "Startmeny"
+  onOpenDifficulty, // callback för "Svårighetsgrad"
 }) {
   const [isPanelOpen, setIsPanelOpen] = useState(false);
 
@@ -187,26 +188,62 @@ function SettingsPanel({
               ❌
             </button>
 
-            <button type="button" onClick={() => resetGame(size)}>
-              Hur speler jag
+            {/* Hur spelar jag -> tutorial-sidan */}
+            <button
+              type="button"
+              onClick={() => {
+                if (onHowToPlay) onHowToPlay();
+                setIsPanelOpen(false);
+              }}
+            >
+              📘 Hur spelar jag
             </button>
-            <button type="button" onClick={() => resetGame(size)}>
-              Ny omgång
+
+            {/* Svårighetsgrad i inställningar */}
+            <button
+              type="button"
+              onClick={() => {
+                if (onOpenDifficulty) onOpenDifficulty();
+                setIsPanelOpen(false);
+              }}
+            >
+              🎚️ Svårighetsgrad
             </button>
+
+            <button type="button" onClick={() => resetGame(size)}>
+              🔄 Ny omgång
+            </button>
+
             <button type="button" onClick={handleInstantWin}>
-              Vinn nu
+              🏆 Vinn nu
             </button>
-            <button type="button" onClick={() => {
-              toggleBoardFocus();
-              setIsPanelOpen(false)
-            }}>
+
+            <button
+              type="button"
+              onClick={() => {
+                toggleBoardFocus();
+                setIsPanelOpen(false);
+              }}
+            >
               {boardFocusMode ? "EJ Fokus på Pussel" : "Fokus på Pussel"}
             </button>
+
             <button
               type="button"
               onClick={() => setSoundOn((prev) => !prev)}
             >
               {soundOn ? "🔊 Ljud PÅ" : "🔇 Ljud AV"}
+            </button>
+
+            {/* Startmeny från sidovyn */}
+            <button
+              type="button"
+              onClick={() => {
+                if (onGoToMainMenu) onGoToMainMenu();
+                setIsPanelOpen(false);
+              }}
+            >
+              🏠 Startmeny
             </button>
           </div>
         )}
@@ -243,23 +280,8 @@ export default function App() {
   const [showPopup, setShowPopup] = useState(false);
   const [soundOn, setSoundOn] = useState(true);
   const [showFullImage, setShowFullImage] = useState(false);
-  // Holds DOM refs to each tile button by tile value (1..n)
+
   const tileRefs = useRef({});
-
-  // // Global keyboard controls: arrow keys move the empty space
-  // useEffect(() => {
-  //   function handleKeyDown(e) {
-  //     if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
-  //       e.preventDefault();
-  //       const direction = e.key.replace("Arrow", "").toLowerCase();
-  //       moveUsingKeyboard(direction);
-  //     }
-  //   }
-
-  //   window.addEventListener("keydown", handleKeyDown);
-  //   return () => window.removeEventListener("keydown", handleKeyDown);
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
 
   function resetGame(newSize = size, newDifficulty = difficulty) {
     let boardSize = newSize;
@@ -283,7 +305,6 @@ export default function App() {
     setLiveMessage("New puzzle started.");
     setShowPopup(false);
     setShowFullImage(false);
-
   }
 
   function handleSizeChange(e) {
@@ -347,9 +368,8 @@ export default function App() {
         // 3. Vänta lite, visa popup efteråt
         setTimeout(() => {
           setShowPopup(true);
-        }, 3000); // t.ex. 1 sekund
+        }, 3000);
       }
-
 
       return newTiles;
     });
@@ -503,30 +523,6 @@ export default function App() {
     }
   }
 
-  // function moveUsingKeyboard(direction) {
-  //   const emptyIndex = tiles.indexOf(0);
-  //   const row = Math.floor(emptyIndex / size);
-  //   const col = emptyIndex % size;
-
-  //   let targetIndex = null;
-
-  //   if (direction === "up" && row < size - 1) {
-  //     targetIndex = emptyIndex + size;
-  //   } else if (direction === "down" && row > 0) {
-  //     targetIndex = emptyIndex - size;
-  //   } else if (direction === "left" && col < size - 1) {
-  //     targetIndex = emptyIndex + 1;
-  //   } else if (direction === "right" && col > 0) {
-  //     targetIndex = emptyIndex - 1;
-  //   }
-
-  //   if (targetIndex !== null) {
-  //     swapTiles(targetIndex, emptyIndex);
-  //   } else {
-  //     setLiveMessage("Cannot move in that direction.");
-  //   }
-  // }
-
   function handleInstantWin() {
     const solved = createSolvedBoard(size);
     setTiles(solved);
@@ -538,6 +534,7 @@ export default function App() {
 
   // --- SIDOR / VIEWS ---
 
+  // STARTMENY
   if (showMainPage) {
     return (
       <div className="app main-page">
@@ -565,13 +562,36 @@ export default function App() {
           >
             Hur spelar jag
           </button>
+          {/* Inställnings-knapp på startmenyn */}
+          <SettingsPanel
+            resetGame={resetGame}
+            size={size}
+            handleInstantWin={handleInstantWin}
+            toggleBoardFocus={() => { }}         // ingen fokus-funktion här
+            boardFocusMode={false}
+            soundOn={soundOn}
+            setSoundOn={setSoundOn}
+            onHowToPlay={() => {
+              setShowMainPage(false);
+              setShowTutorialPage(true);
+            }}
+            onGoToMainMenu={() => {
+              setShowMainPage(true);
+              setShowTutorialPage(false);
+              setShowDifficultyPage(false);
+            }}
+            onOpenDifficulty={() => {
+              setShowMainPage(false);
+              setShowDifficultyPage(true);
+            }}
+          />
         </div>
       </div>
     );
   }
 
+  // TUTORIAL-SIDA
   if (showTutorialPage) {
-
     return (
       <div className="app tutorial-page">
         <h1 className="app-title">🧩 Hur man spelar 🧩</h1>
@@ -581,13 +601,15 @@ export default function App() {
         </p>
 
         <div className="tutorial-images">
-        <video src="/src/assets/Images/instruktionsVideoMedLjud.mp4" 
-          className="tutorial-image" controls /* shows play/pause bar */ 
-          autoPlay={false} 
-          loop={false} 
-        > 
-          Your browser does not support the video tag. 
-        </video>
+          <video
+            src="/src/assets/Images/instruktionsVideoMedLjud.mp4"
+            className="tutorial-image"
+            controls
+            autoPlay={false}
+            loop={false}
+          >
+            Your browser does not support the video tag.
+          </video>
         </div>
 
         <button
@@ -603,6 +625,7 @@ export default function App() {
     );
   }
 
+  // SVÅRIGHETSSIDA
   if (showDifficultyPage) {
     return (
       <div className="app difficulty-page">
@@ -642,24 +665,34 @@ export default function App() {
   }
 
   // --- SJÄLVA SPELET ---
-
   return (
     <main className="app" aria-label="Sliding puzzle game">
       <h1 className="app-title"> 🧩 Pussel 🧩</h1>
 
       <div className="game-layout">
-
         <section className="controls" aria-label="Game settings">
           <div className="control-group">
-
+            {/* HÄR: Fokus på pussel istället för Svårighetsgrad */}
             <button
               type="button"
-              onClick={() => setShowDifficultyPage(true)}
+              onClick={toggleBoardFocus}
             >
-              Svårighetsgrad
+              {boardFocusMode ? "EJ Fokus på Pussel" : "Fokus på Pussel"}
             </button>
 
-            {/* KNAPP + PANEL PÅ SIDAN */}
+            {/* STARTMENY-KNAPP PÅ SPELSIDAN */}
+            <button
+              type="button"
+              onClick={() => {
+                setShowMainPage(true);
+                setShowTutorialPage(false);
+                setShowDifficultyPage(false);
+              }}
+            >
+              Startmeny
+            </button>
+
+            {/* Sidopanel / inställningar på spelsidan */}
             <SettingsPanel
               resetGame={resetGame}
               size={size}
@@ -668,12 +701,25 @@ export default function App() {
               boardFocusMode={boardFocusMode}
               soundOn={soundOn}
               setSoundOn={setSoundOn}
+              onHowToPlay={() => {
+                setShowTutorialPage(true);
+                setShowMainPage(false);
+                setShowDifficultyPage(false);
+              }}
+              onGoToMainMenu={() => {
+                setShowMainPage(true);
+                setShowTutorialPage(false);
+                setShowDifficultyPage(false);
+              }}
+              onOpenDifficulty={() => {
+                setShowDifficultyPage(true);
+              }}
             />
           </div>
 
           <p id="instructions">
             Använd “Fokus på Pussel" för att skifta mellan tillgängliga rutor med
-            Tab. Tryck på  <kbd>Esc</kbd> för att avsluta Pussel Fokus.
+            Tab. Tryck på <kbd>Esc</kbd> för att avsluta Pussel Fokus.
           </p>
         </section>
 
@@ -687,7 +733,8 @@ export default function App() {
         >
           <div className="puzzle-grid-wrapper">
             <div
-              className={`puzzle-grid ${showFullImage ? "puzzle-grid--faded" : ""}`}
+              className={`puzzle-grid ${showFullImage ? "puzzle-grid--faded" : ""
+                }`}
               style={{
                 gridTemplateColumns: `repeat(${size}, minmax(6rem, 8rem))`,
               }}
@@ -704,10 +751,8 @@ export default function App() {
                 }
 
                 const movable = isTileMovable(index, tiles, size);
-
                 const col = (value - 1) % size;
                 const row = Math.floor((value - 1) / size);
-
                 const step = 100 / (size - 1);
 
                 return (
@@ -734,7 +779,6 @@ export default function App() {
                         : `Tile ${value}. Not currently movable.`
                     }
                     style={{
-                      //  backgroundImage: "url('/src/assets/Images/lorax.png')", 
                       backgroundImage:
                         difficulty === "easy"
                           ? "url('/src/assets/Images/regnbåge.png')"
@@ -763,17 +807,15 @@ export default function App() {
           </div>
         </section>
 
-        {
-          showPopup && (
-            <Popup
-              onClose={() => {
-                setShowPopup(false);
-                resetGame(size, difficulty);
-              }}
-            />
-          )
-        }
+        {showPopup && (
+          <Popup
+            onClose={() => {
+              setShowPopup(false);
+              resetGame(size, difficulty);
+            }}
+          />
+        )}
       </div>
-    </main >
+    </main>
   );
 }
