@@ -19,11 +19,9 @@ body {
   justify-content: center;
   align-items: stretch;
   background: radial-gradient(circle at top, #ffffff 0, #e4e4e4 60%, #d0d0d0 100%);
-  position: relative; /* needed for pseudo-element */
-  overflow: hidden;
+  position: relative;
 }
 
-/* Faded background image */
 body::before {
   content: "";
   position: absolute;
@@ -35,12 +33,11 @@ body::before {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  opacity: 0.2;      /* adjust opacity for fade effect */
-  z-index: 0;         /* behind all content */
+  opacity: 0.2;
+  z-index: 0;
 }
 
-/* Make sure your content is above the background */
-body > * {
+body>* {
   position: relative;
   z-index: 1;
 }
@@ -53,11 +50,10 @@ body > * {
   align-items: center;
 }
 
-/* Global form controls look */
 select,
 button {
   font: inherit;
-  font-size: 1.1rem;      
+  font-size: 1.1rem;
   padding: 0.6rem 1rem;
   border-radius: 0.5rem;
   border: 1px solid #444;
@@ -72,10 +68,10 @@ button {
 }
 
 .button-container {
-  display: flex; 
-  justify-content: center; 
-  gap: 15px; 
-  margin-top: 1.5rem; 
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 1.5rem;
 }
 
 button:hover {
@@ -93,7 +89,6 @@ select:focus-visible {
   outline-offset: 2px;
 }
 
-/* Screen-reader-only content (global utility) */
 .visually-hidden {
   border: 0;
   clip: rect(0 0 0 0);

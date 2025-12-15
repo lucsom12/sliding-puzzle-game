@@ -23,7 +23,7 @@ function createSolvedBoard(size) {
   for (let i = 1; i < total; i++) {
     arr.push(i);
   }
-  arr.push(0); // 0 = empty tile
+  arr.push(0);
   return arr;
 }
 
@@ -45,10 +45,8 @@ function isSolvable(tiles, size) {
   const emptyRowFromBottom = size - emptyRowFromTop;
 
   if (size % 2 !== 0) {
-    // odd grid: even inversions
     return inversions % 2 === 0;
   } else {
-    // even grid
     const isBlankOnEvenRowFromBottom = emptyRowFromBottom % 2 === 0;
     if (isBlankOnEvenRowFromBottom) {
       return inversions % 2 === 1;
@@ -72,7 +70,6 @@ function shuffleBoard(size) {
     arr.push(i);
   }
 
-  // Fisher–Yates shuffle until we get a solvable, non-trivial board
   let tries = 0;
   while (true) {
     tries++;
@@ -84,13 +81,11 @@ function shuffleBoard(size) {
       return arr;
     }
     if (tries > 1000) {
-      // Fallback: just return solved if shuffling keeps failing for some reason
       return createSolvedBoard(size);
     }
   }
 }
 
-// Medium–bräde: 3×3 där översta raden redan är rätt
 function createMediumBoard() {
   const size = 3;
   const topRow = [1, 2, 3];
@@ -101,7 +96,6 @@ function createMediumBoard() {
     tries++;
     const bottomTiles = [...bottomTilesBase];
 
-    // Fisher–Yates på nedersta 2 raderna
     for (let i = bottomTiles.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [bottomTiles[i], bottomTiles[j]] = [bottomTiles[j], bottomTiles[i]];
@@ -114,24 +108,21 @@ function createMediumBoard() {
     }
 
     if (tries > 1000) {
-      // Om något knasar, ta bara en vanlig shuffle
       return shuffleBoard(size);
     }
   }
 }
 
-// Hjälpare: skapa bräde utifrån svårighetsgrad
 function generateBoardForDifficulty(size, difficulty) {
   if (difficulty === "easy") {
-    return shuffleBoard(2); // 2×2 blandad
+    return shuffleBoard(2); // 2x2 
   }
   if (difficulty === "medium") {
-    return createMediumBoard(); // 3×3, översta raden rätt
+    return createMediumBoard(); // 3x3, översta raden rätt
   }
   if (difficulty === "hard") {
-    return shuffleBoard(3); // 3×3 blandad
+    return shuffleBoard(3); // 3x3 
   }
-  // Ingen svårighet = "fri" storlek
   return shuffleBoard(size);
 }
 
@@ -147,7 +138,6 @@ function Popup({ onClose }) {
   );
 }
 
-// === SIDOPANEL FÖR INSTÄLLNINGAR ===
 function SettingsPanel({
   resetGame,
   size,
@@ -156,9 +146,9 @@ function SettingsPanel({
   boardFocusMode,
   soundOn,
   setSoundOn,
-  onHowToPlay,      // callback för "Hur spelar jag?"
-  onGoToMainMenu,   // callback för "Startmeny"
-  onOpenDifficulty, // callback för "Svårighetsgrad"
+  onHowToPlay,
+  onGoToMainMenu,
+  onOpenDifficulty,
 }) {
   const [isPanelOpen, setIsPanelOpen] = useState(false);
 
@@ -309,7 +299,6 @@ export default function App() {
 
   function handleSizeChange(e) {
     const newSize = Number(e.target.value);
-    // Byter till "fri" storlek → ingen svårighetsgrad
     resetGame(newSize, null);
   }
 
@@ -354,10 +343,8 @@ export default function App() {
         setLiveMessage(solvedMessage);
         setBoardFocusMode(false);
 
-        // 1. Visa helbilden ovanpå brädet
         setShowFullImage(true);
 
-        //2. spela ljud
         if (soundOn) {
           const audio = winSoundRef.current;
           audio.pause();
@@ -365,7 +352,6 @@ export default function App() {
           audio.play();
         }
 
-        // 3. Vänta lite, visa popup efteråt
         setTimeout(() => {
           setShowPopup(true);
         }, 3000);
@@ -736,7 +722,10 @@ export default function App() {
               className={`puzzle-grid ${showFullImage ? "puzzle-grid--faded" : ""
                 }`}
               style={{
-                gridTemplateColumns: `repeat(${size}, minmax(6rem, 8rem))`,
+                gridTemplateColumns: `repeat(${size}, auto)`,
+                justifyContent: "center",
+                width: "fit-content",
+                margin: "0 auto"
               }}
             >
               {tiles.map((value, index) => {
